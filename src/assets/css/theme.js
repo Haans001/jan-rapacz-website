@@ -1,5 +1,3 @@
-import { css } from 'styled-components';
-
 export default {
   colors: {
     black: '#000000',
@@ -30,13 +28,4 @@ export default {
     tablet: 768,
     phone: 576,
   },
-
-  //   media: Object.keys(this.sizes).reduce((acc, label) => {
-  //     acc[label] = (...args) => css`
-  //       @media (max-width: ${this.sizes[label]}px) {
-  //         ${css(...args)}
-  //       }
-  //     `;
-  //     return acc;
-  //   }, {}),
 };
