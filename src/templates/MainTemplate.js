@@ -3,7 +3,7 @@ import SEO from 'components/SEO/SEO';
 import GlobalStyle from 'assets/css/GlobalStyle';
 import theme from 'assets/css/theme';
 import propTypes from 'prop-types';
-import styled, { ThemeProvider } from 'styled-components';
+import { ThemeProvider } from 'styled-components';
 
 export default function MainTemplate({ children }) {
   console.log(theme);
