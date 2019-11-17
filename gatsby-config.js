@@ -1,7 +1,9 @@
+const path = require('path');
+
 module.exports = {
   siteMetadata: {
     title: `Gatsby with styled components starter`,
-    description: `Kick off your next, great Gatsby project with this default starter. This barebones starter ships with the main Gatsby configuration files you might need.`,
+    description: `Here lands a description of page`,
     author: `hans001`,
   },
   plugins: [
@@ -25,6 +27,48 @@ module.exports = {
         theme_color: `#663399`,
         display: `minimal-ui`,
         // icon: `src/images/gatsby-icon.png`,  This path is relative to the root of the site.
+      },
+    },
+    {
+      resolve: `gatsby-plugin-styled-components`,
+      options: {
+        displayName: true,
+      },
+    },
+    {
+      resolve: 'gatsby-plugin-eslint',
+      options: {
+        test: /\.js$|\.jsx$/,
+        exclude: /(node_modules|.cache|public)/,
+        options: {
+          emitWarning: true,
+          failOnError: false,
+        },
+      },
+    },
+    {
+      resolve: 'gatsby-plugin-stylelint',
+      options: {
+        files: ['**/*.js'],
+      },
+    },
+    {
+      resolve: 'gatsby-plugin-root-import',
+      options: {
+        src: path.join(__dirname, 'src'),
+        pages: path.join(__dirname, 'src/pages'),
+        assets: path.join(__dirname, 'src/assets'),
+        templates: path.join(__dirname, 'src/templates'),
+        components: path.join(__dirname, 'src/components'),
+        utils: path.join(__dirname, 'src/utils'),
+      },
+    },
+    {
+      resolve: 'gatsby-plugin-web-font-loader',
+      options: {
+        google: {
+          families: ['Roboto Mono'],
+        },
       },
     },
     // this (optional) plugin enables Progressive Web App + Offline functionality
