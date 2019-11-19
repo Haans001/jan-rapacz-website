@@ -2,7 +2,7 @@ const path = require('path');
 
 module.exports = {
   siteMetadata: {
-    title: `Gatsby with styled components starter`,
+    title: `My website`,
     description: `Here lands a description of page`,
     author: `hans001`,
   },

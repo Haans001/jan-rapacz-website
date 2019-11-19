@@ -13,6 +13,7 @@ export default {
     xl: '4.3rem',
   },
   zIndex: {
+    levelMinus: '-1000',
     level1: '1000',
     level2: '2000',
     level3: '3000',
