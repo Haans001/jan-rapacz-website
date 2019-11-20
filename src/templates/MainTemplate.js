@@ -9,15 +9,14 @@ import styled, { ThemeProvider } from 'styled-components';
 
 const Perspective = styled.div`
   perspective: 1500px;
-  position: fixed;
+  position: absolute;
   width: 100%;
-  z-index: ${({ active, theme }) => (active ? theme.zIndex.levelMinus : null)};
 `;
 
 const StyledWrapper = styled.div`
   background: ${({ theme }) => theme.colors.black};
   width: 100%;
-  height: 100vh; /* change later */
+  min-height: 100vh;
   color: white; /* change later */
   position: relative;
   outline: 2px solid white;
@@ -41,9 +40,9 @@ export default function MainTemplate({ children, uri }) {
             <Navigation pathname={uri} handleToggle={handleToggle} />
             <StyledWrapper active={toggled}>
               <Hamburger handleToggle={handleToggle} />
+              {children}
             </StyledWrapper>
           </Perspective>
-          {children}
         </>
       </ThemeProvider>
     </>

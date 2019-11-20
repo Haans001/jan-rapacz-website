@@ -26,7 +26,7 @@ const links = ['about', 'work', 'contact'];
 export default function Navigation({ pathname, handleToggle }) {
   return (
     <StyledList>
-      <StyledLink onClick={handleToggle} active={pathname === '/'}>
+      <StyledLink onClick={handleToggle} active={pathname === '/'} to="/">
         home
       </StyledLink>
       {links.map(link => (

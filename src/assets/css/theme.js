@@ -3,14 +3,15 @@ export default {
     black: '#000000',
     grey: '#585858',
     darkGrey: '#030303',
+    lightGrey: '#6e6e6e',
     blue: '#0808C4',
     white: '#ffffff',
   },
   fontSize: {
     s: '1.2rem',
     m: '1.7rem',
-    l: '3.3rem',
-    xl: '4.3rem',
+    l: '4.3rem',
+    xl: '5.3rem',
   },
   zIndex: {
     levelMinus: '-1000',
@@ -28,5 +29,10 @@ export default {
     desktop: 1150,
     tablet: 768,
     phone: 576,
+  },
+  fontWeight: {
+    light: 300,
+    regular: 400,
+    bold: 700,
   },
 };

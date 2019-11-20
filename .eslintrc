@@ -7,7 +7,7 @@
     "prettier",
     "prettier/react"
   ],
-  // "plugins": ["react", "prettier", "jsx-a11y", "import"],
+  //"plugins": ["react", "prettier", "jsx-a11y", "import"],
   "globals": {
     "window": true,
     "document": true
