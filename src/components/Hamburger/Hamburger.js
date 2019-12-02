@@ -9,6 +9,7 @@ const StyledHamburger = styled.div`
   position: fixed;
   top: 50px;
   right: 50px;
+  z-index: 1000;
 
   &::after {
     position: absolute;

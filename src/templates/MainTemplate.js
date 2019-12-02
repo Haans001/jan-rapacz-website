@@ -5,7 +5,7 @@ import Hamburger from 'components/Hamburger/Hamburger';
 import GlobalStyle from 'assets/css/GlobalStyle';
 import GlobalTheme from 'assets/css/theme';
 import propTypes from 'prop-types';
-import styled, { ThemeProvider } from 'styled-components';
+import styled, { ThemeProvider, css } from 'styled-components';
 
 const Perspective = styled.div`
   perspective: 1500px;
@@ -17,18 +17,31 @@ const StyledWrapper = styled.div`
   background: ${({ theme }) => theme.colors.black};
   width: 100%;
   min-height: 100vh;
-  color: white; /* change later */
+  height: 0;
   position: relative;
   outline: 2px solid white;
   transition: transform 0.2s ease-in-out;
-  transform: ${({ active }) =>
-    active ? `translateZ(-1800px) translateX(30%) rotateY(-45deg)` : null};
+  ${({ active }) =>
+    active
+      ? css`
+          height: 100vh;
+          overflow: hidden;
+          transform: translateZ(-1800px) translateX(30%) rotateY(-45deg);
+        `
+      : null}
+  overflow : ${({ overflow }) => (overflow ? `visble` : `hidden`)};    
 `;
 
 export default function MainTemplate({ children, uri }) {
   const [toggled, toggle] = useState(false);
+  const [delayedOverflow, setOverflow] = useState(true);
 
-  const handleToggle = () => toggle(!toggled);
+  const handleToggle = () => {
+    toggle(!toggled);
+    if (toggled) {
+      setTimeout(() => setOverflow(true), 200);
+    } else setOverflow(false);
+  };
 
   return (
     <>
@@ -38,7 +51,7 @@ export default function MainTemplate({ children, uri }) {
         <>
           <Perspective active={toggled}>
             <Navigation pathname={uri} handleToggle={handleToggle} />
-            <StyledWrapper active={toggled}>
+            <StyledWrapper active={toggled} overflow={delayedOverflow}>
               <Hamburger handleToggle={handleToggle} />
               {children}
             </StyledWrapper>

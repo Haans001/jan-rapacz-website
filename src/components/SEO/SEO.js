@@ -16,11 +16,13 @@ function SEO() {
     `
   );
 
+  console.log(site);
+
   return (
     <Helmet>
       <html lang="en" />
-      <title>{site.title}</title>
-      <meta name="description" content={site.description} />
+      <title>{site.siteMetadata.title}</title>
+      <meta name="description" content={site.siteMetadata.description} />
     </Helmet>
   );
 }

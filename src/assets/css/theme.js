@@ -5,13 +5,18 @@ export default {
     darkGrey: '#030303',
     lightGrey: '#6e6e6e',
     blue: '#0808C4',
-    white: '#ffffff',
+    white: '#fff',
   },
   fontSize: {
     s: '1.2rem',
     m: '1.7rem',
+    xm: '2rem',
     l: '4.3rem',
     xl: '5.3rem',
+  },
+  fontFamily: {
+    robotoMono: "'Roboto Mono', sans-serif",
+    montserrat: "'Montserrat', sans-serif",
   },
   zIndex: {
     levelMinus: '-1000',
