@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { ParallaxProvider } from 'react-scroll-parallax';
 import SEO from 'components/SEO/SEO';
 import Navigation from 'components/Navigation/Navigation';
 import Hamburger from 'components/Hamburger/Hamburger';
@@ -16,10 +17,9 @@ const Perspective = styled.div`
 const StyledWrapper = styled.div`
   background: ${({ theme }) => theme.colors.black};
   width: 100%;
-  min-height: 100vh;
   height: 0;
+  min-height: 100vh;
   position: relative;
-  outline: 2px solid white;
   transition: transform 0.2s ease-in-out;
   ${({ active }) =>
     active
@@ -27,6 +27,7 @@ const StyledWrapper = styled.div`
           height: 100vh;
           overflow: hidden;
           transform: translateZ(-1800px) translateX(30%) rotateY(-45deg);
+          outline: 2px solid white;
         `
       : null}
   overflow : ${({ overflow }) => (overflow ? `visble` : `hidden`)};    
@@ -35,13 +36,18 @@ const StyledWrapper = styled.div`
 export default function MainTemplate({ children, uri }) {
   const [toggled, toggle] = useState(false);
   const [delayedOverflow, setOverflow] = useState(true);
+  const timerId = useRef(null);
 
   const handleToggle = () => {
     toggle(!toggled);
     if (toggled) {
-      setTimeout(() => setOverflow(true), 200);
+      timerId.current = setTimeout(() => setOverflow(true), 200);
     } else setOverflow(false);
   };
+
+  useEffect(() => {
+    return () => clearTimeout(timerId.current);
+  }, []);
 
   return (
     <>
@@ -49,13 +55,15 @@ export default function MainTemplate({ children, uri }) {
       <GlobalStyle />
       <ThemeProvider theme={GlobalTheme}>
         <>
-          <Perspective active={toggled}>
-            <Navigation pathname={uri} handleToggle={handleToggle} />
-            <StyledWrapper active={toggled} overflow={delayedOverflow}>
-              <Hamburger handleToggle={handleToggle} />
-              {children}
-            </StyledWrapper>
-          </Perspective>
+          <ParallaxProvider>
+            <Perspective active={toggled}>
+              <Navigation pathname={uri} handleToggle={handleToggle} />
+              <StyledWrapper active={toggled} overflow={delayedOverflow}>
+                <Hamburger handleToggle={handleToggle} />
+                {children}
+              </StyledWrapper>
+            </Perspective>
+          </ParallaxProvider>
         </>
       </ThemeProvider>
     </>
@@ -67,9 +75,8 @@ MainTemplate.propTypes = {
     propTypes.arrayOf(propTypes.node),
     propTypes.node,
   ]),
-  uri: propTypes.string,
+  uri: propTypes.string.isRequired,
 };
 MainTemplate.defaultProps = {
   children: [],
-  uri: '/',
 };

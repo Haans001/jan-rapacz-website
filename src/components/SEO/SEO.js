@@ -16,8 +16,6 @@ function SEO() {
     `
   );
 
-  console.log(site);
-
   return (
     <Helmet>
       <html lang="en" />

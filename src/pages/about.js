@@ -2,6 +2,8 @@ import React from 'react';
 import { graphql } from 'gatsby';
 import propTypes from 'prop-types';
 import styled from 'styled-components';
+import Scrollmagic from 'scrollmagic';
+import '../../node_modules/scrollmagic/scrollmagic/uncompressed/plugins/animation.gsap';
 import Img from 'gatsby-image';
 import MainTemplate from 'templates/MainTemplate';
 import StyledSectionTitle, {
@@ -11,23 +13,32 @@ import StyledSectionTitle, {
 import Button from 'components/Button/Button';
 import List from 'components/List/List';
 import arrow from 'assets/images/arrow.svg';
-import StyledIcon from 'components/Icon/Icon';
+import Icon from 'components/Icon/Icon';
 import SVG from 'react-inlinesvg';
 import quote from 'assets/images/quote.svg';
 import instagram from 'assets/images/instagram.svg';
 import linkedin from 'assets/images/linkedin.svg';
 import facebook from 'assets/images/facebook.svg';
-import Fade from 'react-reveal/Fade';
+import getAboutTimelines from 'utils/timelines';
 
 const ImagesWrapper = styled.div`
   width: 100%;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  height: 350px;
+  height: 250px;
+`;
+
+const StyledArrow = styled(Icon)`
+  width: 15px;
+  height: 100%;
 `;
 
 const StyledWrapper = styled.div`
   padding: 12%;
+
+  &:nth-of-type(3) {
+    padding: 5% 12% 12%;
+  }
   &:nth-child(even) {
     background: ${({ theme }) => theme.colors.darkGrey};
   }
@@ -58,7 +69,7 @@ const StyledList = styled.ul`
     p {
       color: ${({ theme }) => theme.colors.grey};
       font-size: ${({ theme }) => theme.fontSize.m};
-      letter-spacing: 1px;
+      letter-spacing: 2px;
       margin: 0.5rem 0;
     }
   }
@@ -93,21 +104,29 @@ const StyledSkillBar = styled.div`
   }
 `;
 
+const StyledQuoteWrapper = styled.div`
+  position: relative;
+  margin-top: 25rem;
+
+  svg {
+    position: absolute;
+    top: -6rem;
+    left: -6rem;
+  }
+`;
+
 const StyledQuote = styled.p`
   font-family: ${({ theme }) => theme.fontFamily.montserrat};
   font-size: ${({ theme }) => theme.fontSize.xl};
   font-style: italic;
-  margin-top: 25rem;
   color: ${({ theme }) => theme.colors.white};
-  position: relative;
   z-index: ${({ theme }) => theme.zIndex.level1};
-
-  svg {
-    position: absolute;
-    top: -8rem;
-    left: -8rem;
-    z-index: -1;
+  position: relative;
+  /* stylelint-disable */
+  span {
+    display: inline-block;
   }
+  /* stylelint-enable */
 `;
 
 const StyledDivider = styled.div`
@@ -136,6 +155,7 @@ const StyledFooter = styled.div`
 
 const StyledSocialIconsWrapper = styled.div`
   margin-top: 10rem;
+  display: flex;
   svg {
     margin: 4rem;
     cursor: pointer;
@@ -166,106 +186,130 @@ const toolsData = [
   },
 ];
 
-const AboutPage = ({ children, uri, data }) => {
-  const {
-    allFile: { edges },
-  } = data;
+class AboutPage extends React.Component {
+  constructor(props) {
+    super(props);
+    this.controller = new Scrollmagic.Controller();
+    this.triggers = [];
+  }
 
-  return (
-    <MainTemplate childeren={children} uri={uri}>
-      <ImagesWrapper>
-        {edges.map(edge => (
-          <Img key={edge.node.id} fluid={edge.node.childImageSharp.fluid} />
-        ))}
-      </ImagesWrapper>
-      <StyledWrapper>
-        <StyledSectionTitle>About</StyledSectionTitle>
-        <StyledHeader>Jan Rapacz</StyledHeader>
-        <StyledParagraph>
-          Mutlitalented developer and designer based in Kraków in south Poland,
-          focusing on best user experience and interface design. I got into web
-          dev few years ago and I'm proudly developing my skills in all kinds of
-          IT business. In free time I love to spent time with people I love and
-          respect. I won't despite a great beer with good interlocutor 🍺.
-        </StyledParagraph>
-        <Button to="/">
-          Contact Me <StyledIcon src={arrow} />
-        </Button>
-      </StyledWrapper>
-      <StyledWrapper>
-        <StyledSectionGrid>
-          <div>
-            <StyledSectionTitle>Timeline</StyledSectionTitle>
-            <StyledHeader>
-              School years and <u>proffesional</u> experience.
-            </StyledHeader>
-          </div>
-          <div>
+  componentDidMount() {
+    const timelines = getAboutTimelines(this.triggers);
+    timelines.forEach((timeline, index) => {
+      new Scrollmagic.Scene({
+        triggerElement: this.triggers[index],
+      })
+        .setTween(timeline)
+        .addTo(this.controller);
+    });
+  }
+
+  render() {
+    const { uri, data } = this.props;
+    const {
+      allFile: { edges },
+    } = data;
+
+    return (
+      <MainTemplate uri={uri}>
+        <ImagesWrapper>
+          {edges.map(edge => (
+            <Img fluid={edge.node.childImageSharp.fluid} key={edge.node.id} />
+          ))}
+        </ImagesWrapper>
+        <StyledWrapper ref={trigger => this.triggers.push(trigger)}>
+          <StyledSectionTitle>About</StyledSectionTitle>
+          <StyledHeader>Jan Rapacz</StyledHeader>
+          <StyledParagraph>
+            Mutlitalented developer and designer based in Kraków in south
+            Poland, focusing on best user experience and interface design. I got
+            into web dev few years ago and I'm proudly developing my skills in
+            all kinds of IT business. In free time I love to spent time with
+            people I love and respect. I won't despite a great beer with good
+            interlocutor 🍺.
+          </StyledParagraph>
+          <Button to="/">
+            Contact Me <StyledArrow src={arrow} />
+          </Button>
+        </StyledWrapper>
+        <StyledWrapper>
+          <StyledSectionGrid ref={trigger => this.triggers.push(trigger)}>
+            <div>
+              <StyledSectionTitle>Timeline</StyledSectionTitle>
+              <StyledHeader>
+                School years and <u>proffesional</u> experience.
+              </StyledHeader>
+            </div>
             <StyledList>
               {timelineListData.map(item => (
-                <li key={item.title}>
+                <li key={item.time}>
                   <span>{item.time}</span>
                   <p>{item.content}</p>
                 </li>
               ))}
             </StyledList>
-          </div>
-        </StyledSectionGrid>
-      </StyledWrapper>
-      <StyledWrapper>
-        <StyledSectionGrid>
-          <div>
-            <StyledSectionTitle>skills</StyledSectionTitle>
-            <StyledSkillsList>
-              {skillsData.map(skill => (
-                <li key={skill.name}>
-                  <h5>{skill.name}</h5>
-                  <StyledSkillBar widthPercent={skill.percent}>
-                    <div />
-                  </StyledSkillBar>
-                </li>
+            }
+          </StyledSectionGrid>
+        </StyledWrapper>
+        <StyledWrapper>
+          <StyledSectionGrid ref={trigger => this.triggers.push(trigger)}>
+            <div>
+              <StyledSectionTitle>skills</StyledSectionTitle>
+              <StyledSkillsList>
+                {skillsData.map(skill => (
+                  <li key={skill.name}>
+                    <h5>{skill.name}</h5>
+                    <StyledSkillBar widthPercent={skill.percent}>
+                      <div />
+                    </StyledSkillBar>
+                  </li>
+                ))}
+              </StyledSkillsList>
+            </div>
+            <StyledQuoteWrapper>
+              <StyledQuote>
+                Learning is like an immeasurable sea. The more you drink it, the
+                more thirsty you are.
+              </StyledQuote>
+              <SVG cacheRequests={false} src={quote} />
+            </StyledQuoteWrapper>
+          </StyledSectionGrid>
+          <StyledDivider />
+          <div ref={trigger => this.triggers.push(trigger)}>
+            <StyledHeader>Tools that i use</StyledHeader>
+            <StyledToolsListWrapper>
+              {toolsData.map(({ title, tools }) => (
+                <List key={title} title={title} data={tools} />
               ))}
-            </StyledSkillsList>
+            </StyledToolsListWrapper>
           </div>
-
-          <StyledQuote>
-            Learning is like an immeasurable sea. The more you drink it, the
-            more thirsty you are.
-            <SVG src={quote} />
-          </StyledQuote>
-        </StyledSectionGrid>
-        <StyledDivider />
-        <StyledHeader>Tools that i use</StyledHeader>
-        <StyledToolsListWrapper>
-          {toolsData.map(({ title, tools }) => (
-            <List key={title} title={title} data={tools} />
-          ))}
-        </StyledToolsListWrapper>
-      </StyledWrapper>
-      <StyledWrapper>
-        <StyledFooter>
-          <StyledHeader>
-            Thats my and my stuff. Ready to see my projects?
-          </StyledHeader>
-          <Button to="/">
-            My Work <StyledIcon src={arrow} />
-          </Button>
-          <StyledSocialIconsWrapper>
-            <SVG src={facebook} />
-            <SVG src={linkedin} />
-            <SVG src={instagram} />
-          </StyledSocialIconsWrapper>
-        </StyledFooter>
-      </StyledWrapper>
-    </MainTemplate>
-  );
-};
+        </StyledWrapper>
+        <StyledWrapper>
+          <StyledFooter ref={trigger => this.triggers.push(trigger)}>
+            <StyledHeader>
+              Thats my and my stuff. Ready to see my projects?
+            </StyledHeader>
+            <Button to="/">
+              My Work <StyledArrow src={arrow} />
+            </Button>
+            <StyledSocialIconsWrapper>
+              <Icon src={facebook} />
+              <Icon src={linkedin} />
+              <Icon src={instagram} />
+            </StyledSocialIconsWrapper>
+          </StyledFooter>
+        </StyledWrapper>
+      </MainTemplate>
+    );
+  }
+}
 
 export const query = graphql`
   query {
     allFile(filter: { relativeDirectory: { eq: "about" } }) {
       edges {
         node {
+          id
           childImageSharp {
             fluid(maxWidth: 1500) {
               ...GatsbyImageSharpFluid_noBase64
@@ -283,15 +327,10 @@ AboutPage.propTypes = {
       edges: propTypes.arrayOf(propTypes.shape()),
     }),
   }).isRequired,
-  children: propTypes.oneOfType([
-    propTypes.arrayOf(propTypes.node),
-    propTypes.node,
-  ]),
   uri: propTypes.string,
 };
 
 AboutPage.defaultProps = {
-  children: [],
   uri: '/',
 };
 

@@ -1,9 +1,15 @@
-import styled from 'styled-components';
+import React from 'react';
+import { string } from 'prop-types';
 import SVG from 'react-inlinesvg';
 
-const StyledIcon = styled(SVG)`
-  width: 15px;
-  height: 100%;
-`;
+const Icon = ({ src }) => (
+  <div>
+    <SVG src={src} />
+  </div>
+);
 
-export default StyledIcon;
+Icon.propTypes = {
+  src: string.isRequired,
+};
+
+export default Icon;

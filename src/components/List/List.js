@@ -36,5 +36,7 @@ export default function List({ title, data }) {
 
 List.propTypes = {
   title: propTypes.string.isRequired,
-  data: propTypes.arrayOf(propTypes.string).isRequired,
+  data: propTypes.arrayOf(
+    propTypes.oneOfType([propTypes.string, propTypes.node])
+  ).isRequired,
 };

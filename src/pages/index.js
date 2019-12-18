@@ -1,5 +1,6 @@
 import React from 'react';
 import MainTemplate from 'templates/MainTemplate';
+import propTypes from 'prop-types';
 import styled from 'styled-components';
 import StyledSectionTitle, {
   StyledHeader,
@@ -63,9 +64,9 @@ const socials = [
   },
 ];
 
-const IndexPage = props => {
+const IndexPage = ({ uri }) => {
   return (
-    <MainTemplate {...props}>
+    <MainTemplate uri={uri}>
       <StyledWrapper>
         <StyledSectionTitle>Portfolio</StyledSectionTitle>
         <StyledHeader>
@@ -89,6 +90,10 @@ const IndexPage = props => {
       </StyledWrapper>
     </MainTemplate>
   );
+};
+
+IndexPage.propTypes = {
+  uri: propTypes.string.isRequired,
 };
 
 export default IndexPage;
