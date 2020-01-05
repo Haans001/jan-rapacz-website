@@ -2,11 +2,12 @@ const path = require('path');
 
 module.exports = {
   siteMetadata: {
-    title: `Gatsby with styled components starter`,
+    title: `My website`,
     description: `Here lands a description of page`,
     author: `hans001`,
   },
   plugins: [
+    `gatsby-plugin-transition-link`,
     `gatsby-plugin-react-helmet`,
     {
       resolve: `gatsby-source-filesystem`,
@@ -67,7 +68,7 @@ module.exports = {
       resolve: 'gatsby-plugin-web-font-loader',
       options: {
         google: {
-          families: ['Roboto Mono'],
+          families: ['Roboto Mono', 'Montserrat'],
         },
       },
     },
