@@ -7,6 +7,10 @@ import styled from 'styled-components';
 import MainTemplate from 'templates/MainTemplate';
 import ProjectTemplate from 'templates/ProjectTemplate';
 import StyledSectionTitle, { StyledHeader } from 'utils/typography';
+import media from 'utils/media';
+import ParallaxCache from 'utils/ParallaxCache';
+
+const StyledImageWrapper = styled.div``;
 
 const StyledSectionGrid = styled.div`
   width: 100%;
@@ -14,6 +18,15 @@ const StyledSectionGrid = styled.div`
   grid-gap: 10%;
   grid-template-columns: 50% auto;
   padding: 12%;
+
+  ${media.tablet`
+    grid-template-columns: initial;
+    grid-gap:0;
+
+    ${StyledImageWrapper}{
+      display:none;
+    }
+  `}
 `;
 const StyledTitleTextWrapper = styled.div`
   margin-top: 10rem;
@@ -66,17 +79,18 @@ export default class WorkPage extends Component {
     const {
       allFile: { projectImages },
     } = data;
+
     return (
       <MainTemplate uri={uri}>
+        <ParallaxCache />
         <StyledSectionGrid>
           <StyledTitleTextWrapper>
             <StyledSectionTitle>Work</StyledSectionTitle>
             <StyledHeader>All of my best projects</StyledHeader>
           </StyledTitleTextWrapper>
-          <div>
-            <StyledBorder></StyledBorder>
+          <StyledImageWrapper>
             <Img fluid={titleImage} />
-          </div>
+          </StyledImageWrapper>
         </StyledSectionGrid>
         {projectsData.map(({ title, paragraph }, index) => (
           <ProjectTemplate

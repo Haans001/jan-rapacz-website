@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { Parallax } from 'react-scroll-parallax';
 import { StyledHeader, StyledParagraph } from 'utils/typography';
+import AniLink from 'gatsby-plugin-transition-link/AniLink';
 import { Link } from 'gatsby';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
@@ -8,9 +9,32 @@ import Image from 'gatsby-image';
 import Scrollmagic from 'scrollmagic';
 import '../../node_modules/scrollmagic/scrollmagic/uncompressed/plugins/animation.gsap';
 import { getProjectTemplateTimeline } from 'utils/timelines';
+import media from 'utils/media';
+// import ParallaxCache from 'utils/ParallaxCache';
 
 const StyledImage = styled(Image)`
   overflow: hidden;
+`;
+
+const StyledLine = styled.div`
+  position: absolute;
+  width: 2px;
+  height: calc(100vw / 3);
+  left: ${({ counter }) => (counter % 2 === 0 ? `75%` : `-15%`)};
+  top: -20%;
+  background: #090909;
+  z-index: -1;
+
+  &::before {
+    position: absolute;
+    content: '';
+    width: 11px;
+    border-radius: 1000px;
+    height: 10px;
+    left: -5px;
+    top: -10px;
+    background: #090909;
+  }
 `;
 
 const StyledProjectInfo = styled.div`
@@ -18,6 +42,15 @@ const StyledProjectInfo = styled.div`
   transform: translateX(15%);
   z-index: ${({ theme }) => theme.zIndex.level2};
   position: relative;
+
+  ${media.tablet`
+    transform:none;
+    width:100%;
+
+      ${StyledLine}{
+        display:none;
+      }
+  `}
 `;
 
 const StyledImageWrapper = styled.div`
@@ -49,6 +82,10 @@ const StyledImageWrapper = styled.div`
       }
     }
   }
+
+  ${media.tablet`
+    transform: translate(10%, -20%);
+  `}
 `;
 const StyledWrapper = styled.div`
   width: 100%;
@@ -60,15 +97,38 @@ const StyledWrapper = styled.div`
 
   &:nth-of-type(even) {
     grid-template-columns: auto 30%;
+
     ${StyledProjectInfo} {
       grid-column: 2;
       transform: translateX(-10%);
+
+      ${media.tablet`
+        transform: none;
+      `}
     }
     ${StyledImageWrapper} {
       grid-column: 1;
     }
     grid-auto-flow: dense;
   }
+
+  ${media.tablet`
+    grid-template-columns:initial;
+    padding: 12%;
+
+    &:nth-of-type(even) {
+    grid-template-columns:initial;
+
+    ${StyledProjectInfo} {
+      grid-column: 1;
+    }
+    ${StyledImageWrapper} {
+      grid-column: 2;
+    }   
+  }
+
+
+  `}
 `;
 
 const StyledProjectParagraph = styled(StyledParagraph)`
@@ -83,26 +143,6 @@ const StyledProjectParagraph = styled(StyledParagraph)`
     left: -60px;
     content: '';
     background: ${({ theme }) => theme.colors.blue};
-  }
-`;
-const StyledLine = styled.div`
-  position: absolute;
-  width: 2px;
-  height: calc(100vw / 3);
-  left: ${({ counter }) => (counter % 2 === 0 ? `-15%` : `75%`)};
-  top: -20%;
-  background: #090909;
-  z-index: -1;
-
-  &::before {
-    position: absolute;
-    content: '';
-    width: 11px;
-    border-radius: 1000px;
-    height: 10px;
-    left: -5px;
-    top: -10px;
-    background: #090909;
   }
 `;
 
@@ -123,7 +163,6 @@ export default function ProjectTemplate({
   const infoRef = useRef(null);
   const imageRef = useRef(null);
   const triggerRef = useRef(null);
-  console.log(controller);
 
   useEffect(() => {
     const tl = getProjectTemplateTimeline(infoRef.current, imageRef.current);
@@ -146,7 +185,7 @@ export default function ProjectTemplate({
           </div>
         </Parallax>
       </StyledProjectInfo>
-      <Parallax y={[30, -30]}>
+      <Parallax y={[20, -20]}>
         <StyledImageWrapper ref={imageRef}>
           <StyledImage fluid={image} />
         </StyledImageWrapper>

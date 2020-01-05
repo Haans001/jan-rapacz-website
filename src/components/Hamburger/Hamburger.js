@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import propTypes from 'prop-types';
+import media from 'utils/media';
 
 const StyledHamburger = styled.div`
   width: 50px;
@@ -13,7 +14,7 @@ const StyledHamburger = styled.div`
 
   &::after {
     position: absolute;
-    background: ${({ theme }) => theme.colors.grey};
+    background: #1c1c1c;
     height: 4px;
     top: 0;
     right: 0;
@@ -22,13 +23,18 @@ const StyledHamburger = styled.div`
   }
   &::before {
     position: absolute;
-    background: ${({ theme }) => theme.colors.grey};
+    background: #1c1c1c;
     height: 4px;
     bottom: 0;
     right: 0;
     content: '';
     width: 40px;
   }
+
+  ${media.tablet`
+  top: 50px;
+  right:30px;
+`}
 `;
 
 export default function Hamburger({ handleToggle }) {

@@ -1,10 +1,11 @@
 import { TimelineMax, Power4 } from 'gsap';
+import Splitting from 'splitting';
 
-function getAboutPageTimelines(refs) {
-  const timelines = [];
+export default function getAboutPageTimelines(refs) {
+  const timelines = {};
 
   function heroSectionTimeline() {
-    const ref = refs[0];
+    const ref = refs.heroSectionTimeline;
     const tl = new TimelineMax();
     tl.staggerFrom(
       ref.childNodes,
@@ -13,10 +14,10 @@ function getAboutPageTimelines(refs) {
       0.3
     );
 
-    timelines.push(tl);
+    return tl;
   }
   function timelineSectionTimeline() {
-    const ref = refs[1];
+    const ref = refs.timelineSectionTimeline;
     const tl = new TimelineMax();
     tl.staggerFrom(
       ref.children[0].childNodes,
@@ -34,17 +35,15 @@ function getAboutPageTimelines(refs) {
       { opacity: 0, x: 150, ease: Power4.easeInOut },
       0.1
     );
-    timelines.push(tl);
+    return tl;
   }
 
   function skillsSectionTimeline() {
-    const ref = refs[2];
+    const ref = refs.skillsSectionTimeline;
     const quote = ref.children[1].children[0];
-    const quoteText = quote.textContent;
-    quote.innerHTML = quote.textContent.replace(
-      /\S/g,
-      "<span class='letter'>$&</span>"
-    );
+    const quoteChars = Splitting({ target: quote, whitespace: true })[0].chars;
+
+    console.log(quoteChars);
 
     const tl = new TimelineMax();
     tl.from(ref.children[0].childNodes[0], 1, {
@@ -75,21 +74,18 @@ function getAboutPageTimelines(refs) {
       'bars'
     );
     tl.staggerFrom(
-      quote.childNodes,
+      quoteChars,
       1,
       { opacity: 0, y: 200, ease: Power4.easeOut },
       0.02,
-      'bars+=0.4',
-      () => {
-        quote.textContent = quoteText;
-      }
+      'bars+=0.4'
     );
 
-    timelines.push(tl);
+    return tl;
   }
 
   function toolsSectionTimeline() {
-    const ref = refs[3];
+    const ref = refs.toolsSectionTimeline;
     const header = ref.firstChild;
     const lists = ref.lastChild.children;
 
@@ -97,11 +93,11 @@ function getAboutPageTimelines(refs) {
     tl.from(header, 0.6, { opacity: 0, y: 100, ease: Power4.easeInOut });
     tl.staggerFrom(lists, 1, { opacity: 0, x: -50, ease: Power4.easeOut }, 0.3);
 
-    timelines.push(tl);
+    return tl;
   }
 
   function footerTimeline() {
-    const ref = refs[4];
+    const ref = refs.footerTimeline;
     const tl = new TimelineMax();
     const icons = ref.lastChild.childNodes;
     tl.staggerFrom(
@@ -117,14 +113,14 @@ function getAboutPageTimelines(refs) {
       0.2
     );
 
-    timelines.push(tl);
+    return tl;
   }
 
-  heroSectionTimeline();
-  timelineSectionTimeline();
-  skillsSectionTimeline();
-  toolsSectionTimeline();
-  footerTimeline();
+  timelines.heroSectionTimeline = heroSectionTimeline();
+  timelines.timelineSectionTimeline = timelineSectionTimeline();
+  timelines.skillsSectionTimeline = skillsSectionTimeline();
+  timelines.toolsSectionTimeline = toolsSectionTimeline();
+  timelines.footerTimeline = footerTimeline();
 
   return timelines;
 }
@@ -143,4 +139,22 @@ export function getProjectTemplateTimeline(infoRef, imageRef) {
   return tl;
 }
 
-export default getAboutPageTimelines;
+export function getHomepageTimeline(
+  paragraph,
+  socialLinks,
+  email,
+  sectionTitle
+) {
+  const tl = new TimelineMax({ paused: true });
+  tl.from(sectionTitle, 1, { y: 50, opacity: 0, ease: Power4.easeInOut });
+  tl.from(paragraph, 1, { y: 50, opacity: 0, ease: Power4.easeInOut });
+  tl.staggerFrom(
+    socialLinks.childNodes,
+    0.6,
+    { opacity: 0, y: 30, ease: Power4.easeIn },
+    0.2
+  );
+  tl.from(email, 0.4, { opacity: 0, x: 50, ease: Power4.easeIn });
+
+  return tl;
+}

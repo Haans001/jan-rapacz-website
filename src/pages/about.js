@@ -10,6 +10,7 @@ import StyledSectionTitle, {
   StyledHeader,
   StyledParagraph,
 } from 'utils/typography';
+import media from 'utils/media';
 import Button from 'components/Button/Button';
 import List from 'components/List/List';
 import arrow from 'assets/images/arrow.svg';
@@ -26,6 +27,13 @@ const ImagesWrapper = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   height: 250px;
+
+  ${media.desktop`
+    grid-template-columns: initial;
+     div:nth-child(3), div:nth-child(2){
+      display:none;
+    }
+  `}
 `;
 
 const StyledArrow = styled(Icon)`
@@ -52,27 +60,40 @@ const StyledSectionGrid = styled.div`
   display: grid;
   grid-template-columns: 50% auto;
   grid-gap: 10%;
+
+  ${media.tablet`
+    grid-template-columns: initial;
+    grid-gap: 0;
+  `}
 `;
 
-const StyledList = styled.ul`
+const StyledTimelineList = styled.ul`
   list-style-type: none;
   margin-top: 10rem;
 
   li {
     margin: 5rem 0;
+    font-size: ${({ theme }) => theme.fontSize.m};
 
     span {
       color: ${({ theme }) => theme.colors.blue};
-      font-size: ${({ theme }) => theme.fontSize.m};
     }
 
     p {
       color: ${({ theme }) => theme.colors.grey};
-      font-size: ${({ theme }) => theme.fontSize.m};
       letter-spacing: 2px;
       margin: 0.5rem 0;
     }
+
+    ${media.tablet`
+      font-size: ${({ theme }) => theme.fontSize.mobile.m};
+    `}
   }
+
+  ${media.tablet`
+      margin: 0;
+      padding: 0;
+  `}
 `;
 
 const StyledSkillsList = styled.ul`
@@ -97,6 +118,10 @@ const StyledSkillBar = styled.div`
   background-color: ${({ theme }) => theme.colors.darkGrey};
   height: 10px;
 
+  ${media.tablet`
+      width:100%;
+  `}
+
   div {
     height: 100%;
     width: ${({ widthPercent }) => `${widthPercent}%`};
@@ -108,11 +133,9 @@ const StyledQuoteWrapper = styled.div`
   position: relative;
   margin-top: 25rem;
 
-  svg {
-    position: absolute;
-    top: -6rem;
-    left: -6rem;
-  }
+  ${media.tablet`
+    margin-top: 5rem;
+  `}
 `;
 
 const StyledQuote = styled.p`
@@ -122,6 +145,10 @@ const StyledQuote = styled.p`
   color: ${({ theme }) => theme.colors.white};
   z-index: ${({ theme }) => theme.zIndex.level1};
   position: relative;
+
+  ${media.tablet`
+      font-size: 3.4rem;
+  `}
   /* stylelint-disable */
   span {
     display: inline-block;
@@ -129,11 +156,27 @@ const StyledQuote = styled.p`
   /* stylelint-enable */
 `;
 
+const StyledQuoteIcon = styled(SVG)`
+  position: absolute;
+  top: -6rem;
+  left: -6rem;
+
+  ${media.tablet`
+      left:-2rem;
+      top: -3rem;
+      width: 100px;
+  `}
+`;
+
 const StyledDivider = styled.div`
   display: grid;
   place-items: center;
   height: 200px;
   margin: 15rem 0;
+
+  ${media.tablet`
+      margin: 12rem;
+  `}
 
   &::after {
     content: '';
@@ -145,6 +188,7 @@ const StyledDivider = styled.div`
 
 const StyledToolsListWrapper = styled.div`
   display: flex;
+  flex-wrap: wrap;
 `;
 const StyledFooter = styled.div`
   display: flex;
@@ -160,6 +204,10 @@ const StyledSocialIconsWrapper = styled.div`
     margin: 4rem;
     cursor: pointer;
   }
+
+  ${media.tablet`
+    margin-top: 3rem;
+  `}
 `;
 
 const timelineListData = [
@@ -190,16 +238,16 @@ class AboutPage extends React.Component {
   constructor(props) {
     super(props);
     this.controller = new Scrollmagic.Controller();
-    this.triggers = [];
+    this.triggers = {};
   }
 
   componentDidMount() {
     const timelines = getAboutTimelines(this.triggers);
-    timelines.forEach((timeline, index) => {
+    Object.keys(timelines).forEach(tlName => {
       new Scrollmagic.Scene({
-        triggerElement: this.triggers[index],
+        triggerElement: this.triggers[tlName],
       })
-        .setTween(timeline)
+        .setTween(timelines[tlName])
         .addTo(this.controller);
     });
   }
@@ -217,7 +265,11 @@ class AboutPage extends React.Component {
             <Img fluid={edge.node.childImageSharp.fluid} key={edge.node.id} />
           ))}
         </ImagesWrapper>
-        <StyledWrapper ref={trigger => this.triggers.push(trigger)}>
+        <StyledWrapper
+          ref={trigger => {
+            this.triggers.heroSectionTimeline = trigger;
+          }}
+        >
           <StyledSectionTitle>About</StyledSectionTitle>
           <StyledHeader>Jan Rapacz</StyledHeader>
           <StyledParagraph>
@@ -233,26 +285,33 @@ class AboutPage extends React.Component {
           </Button>
         </StyledWrapper>
         <StyledWrapper>
-          <StyledSectionGrid ref={trigger => this.triggers.push(trigger)}>
+          <StyledSectionGrid
+            ref={trigger => {
+              this.triggers.timelineSectionTimeline = trigger;
+            }}
+          >
             <div>
               <StyledSectionTitle>Timeline</StyledSectionTitle>
               <StyledHeader>
                 School years and <u>proffesional</u> experience.
               </StyledHeader>
             </div>
-            <StyledList>
+            <StyledTimelineList>
               {timelineListData.map(item => (
                 <li key={item.time}>
                   <span>{item.time}</span>
                   <p>{item.content}</p>
                 </li>
               ))}
-            </StyledList>
-            }
+            </StyledTimelineList>
           </StyledSectionGrid>
         </StyledWrapper>
         <StyledWrapper>
-          <StyledSectionGrid ref={trigger => this.triggers.push(trigger)}>
+          <StyledSectionGrid
+            ref={trigger => {
+              this.triggers.skillsSectionTimeline = trigger;
+            }}
+          >
             <div>
               <StyledSectionTitle>skills</StyledSectionTitle>
               <StyledSkillsList>
@@ -271,11 +330,15 @@ class AboutPage extends React.Component {
                 Learning is like an immeasurable sea. The more you drink it, the
                 more thirsty you are.
               </StyledQuote>
-              <SVG cacheRequests={false} src={quote} />
+              <StyledQuoteIcon cacheRequests={false} src={quote} />
             </StyledQuoteWrapper>
           </StyledSectionGrid>
           <StyledDivider />
-          <div ref={trigger => this.triggers.push(trigger)}>
+          <div
+            ref={trigger => {
+              this.triggers.toolsSectionTimeline = trigger;
+            }}
+          >
             <StyledHeader>Tools that i use</StyledHeader>
             <StyledToolsListWrapper>
               {toolsData.map(({ title, tools }) => (
@@ -285,7 +348,11 @@ class AboutPage extends React.Component {
           </div>
         </StyledWrapper>
         <StyledWrapper>
-          <StyledFooter ref={trigger => this.triggers.push(trigger)}>
+          <StyledFooter
+            ref={trigger => {
+              this.triggers.footerTimeline = trigger;
+            }}
+          >
             <StyledHeader>
               Thats my and my stuff. Ready to see my projects?
             </StyledHeader>

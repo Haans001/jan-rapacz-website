@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import propTypes from 'prop-types';
 import { Link } from 'gatsby';
+import media from 'utils/media';
 
 const StyledList = styled.ul`
   list-style-type: none;
@@ -11,6 +12,11 @@ const StyledList = styled.ul`
   position: fixed;
   left: 15%;
   top: 25%;
+
+  ${media.tablet`
+    left : 8%;
+    top: 30%;
+  `}
 `;
 
 const StyledLink = styled(Link)`
@@ -19,6 +25,10 @@ const StyledLink = styled(Link)`
   text-decoration: none;
   font-size: ${({ theme }) => theme.fontSize.xl};
   text-transform: uppercase;
+
+  ${media.tablet`
+    font-size: ${({ theme }) => theme.fontSize.l};
+  `}
 `;
 
 const links = ['about', 'work', 'contact'];

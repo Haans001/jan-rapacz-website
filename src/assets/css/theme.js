@@ -13,6 +13,11 @@ export default {
     xm: '2rem',
     l: '4.3rem',
     xl: '5.3rem',
+
+    mobile: {
+      m: '1.4rem',
+      l: '3rem',
+    },
   },
   fontFamily: {
     robotoMono: "'Roboto Mono', sans-serif",

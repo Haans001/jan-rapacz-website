@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
 import MainTemplate from 'templates/MainTemplate';
 import List from 'components/List/List';
@@ -7,12 +7,26 @@ import StyledSectionTitle, {
   StyledHeader,
   StyledParagraph,
 } from 'utils/typography';
+import media from 'utils/media';
 
 const StyledWrapper = styled.div`
   width: 100%;
   min-height: 100vh;
   padding: 12%;
   position: relative;
+
+  ${media.tablet`
+    display:flex;
+    flex-direction:column;
+    justify-content: center;
+  `}
+`;
+
+const StyledContactHeader = styled(StyledHeader)`
+  ${media.phone`
+    font-size: ${({ theme }) => theme.fontSize.xm};
+    margin-top: 0 !important;
+  `}
 `;
 
 const StyledMediaListWrapper = styled.div`
@@ -20,9 +34,17 @@ const StyledMediaListWrapper = styled.div`
   bottom: 20%;
   right: 12%;
 
+  li {
+    margin: 1rem 0;
+  }
+
   a {
     color: ${({ theme }) => theme.colors.lightGrey} !important;
   }
+
+  ${media.tablet`
+    position:initial;
+  `}
 `;
 
 const MediaLinks = [
@@ -38,17 +60,23 @@ const Links = MediaLinks.map(({ title, url }) => (
 ));
 
 const ContactPage = ({ uri }) => {
+  const textNodes = useRef(null);
+  const list = useRef(null);
+  const tl = useRef();
+
   return (
     <MainTemplate uri={uri}>
       <StyledWrapper>
-        <StyledSectionTitle>contact</StyledSectionTitle>
-        <StyledHeader>jan.rapacz@interia.pl</StyledHeader>
-        <StyledParagraph>
-          If you like to make business or you just looking for a company for a
-          good beer don't hesitate to send me a message!
-        </StyledParagraph>
+        <div ref={textNodes}>
+          <StyledSectionTitle>contact</StyledSectionTitle>
+          <StyledContactHeader>jan.rapacz@interia.pl</StyledContactHeader>
+          <StyledParagraph>
+            If you like to make business or you just looking for a company for a
+            good beer don't hesitate to send me a message 🍺!
+          </StyledParagraph>
+        </div>
         <StyledMediaListWrapper>
-          <List title="Find me" data={Links} />
+          <List ref={list} title="Find me" data={Links} />
         </StyledMediaListWrapper>
       </StyledWrapper>
     </MainTemplate>

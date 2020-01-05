@@ -17,5 +17,20 @@ export default createGlobalStyle`
         margin: 0;
         padding: 0;
         background-color:#030303;
+        overflow:hidden;
+    }
+
+    body::-webkit-scrollbar{
+        background: transparent;
+        width: 6px;
+    }
+
+    body::-webkit-scrollbar-thumb {
+    background-color: white;
+    border-radius: 1000px;
+    } 
+    .whitespace{
+        display: inline-block;
+        width:15px;
     }
 `;
