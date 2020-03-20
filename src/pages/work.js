@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { graphql } from 'gatsby';
 import PropTypes from 'prop-types';
 import Img from 'gatsby-image';
-import Scrollmagic from 'scrollmagic';
 import styled from 'styled-components';
+import { ParallaxProvider } from 'react-scroll-parallax';
 import MainTemplate from 'templates/MainTemplate';
 import ProjectTemplate from 'templates/ProjectTemplate';
 import StyledSectionTitle, { StyledHeader } from 'utils/typography';
@@ -66,7 +66,15 @@ const StyledLink = styled.a`
 export default class WorkPage extends Component {
   constructor() {
     super();
-    this.controller = new Scrollmagic.Controller();
+    this.state = {
+      scrollContainer: null,
+    };
+  }
+
+  componentDidMount() {
+    this.setState({
+      scrollContainer: document.getElementById('scrollContainer'),
+    });
   }
 
   render() {
@@ -80,38 +88,42 @@ export default class WorkPage extends Component {
       allFile: { projectImages },
     } = data;
 
+    const { scrollContainer } = this.state;
+
     return (
-      <MainTemplate uri={uri}>
-        <ParallaxCache />
-        <StyledSectionGrid>
-          <StyledTitleTextWrapper>
-            <StyledSectionTitle>Work</StyledSectionTitle>
-            <StyledHeader>All of my best projects</StyledHeader>
-          </StyledTitleTextWrapper>
-          <StyledImageWrapper>
-            <Img fluid={titleImage} />
-          </StyledImageWrapper>
-        </StyledSectionGrid>
-        {projectsData.map(({ title, paragraph }, index) => (
-          <ProjectTemplate
-            key={title}
-            title={title}
-            counter={index}
-            paragraph={paragraph}
-            image={projectImages[index].childImageSharp.fluid}
-            controller={this.controller}
-          />
-        ))}
-        <StyledFooter>
-          <StyledHeader>
-            See all of my projects on my{' '}
-            <StyledLink href="https://github.com/Haans001?tab=repositories">
-              github
-            </StyledLink>
-            .
-          </StyledHeader>
-        </StyledFooter>
-      </MainTemplate>
+      <ParallaxProvider scrollContainer={scrollContainer}>
+        <MainTemplate uri={uri}>
+          <ParallaxCache />
+          <StyledSectionGrid>
+            <StyledTitleTextWrapper>
+              <StyledSectionTitle>Work</StyledSectionTitle>
+              <StyledHeader>All of my best projects</StyledHeader>
+            </StyledTitleTextWrapper>
+            <StyledImageWrapper>
+              <Img fluid={titleImage} />
+            </StyledImageWrapper>
+          </StyledSectionGrid>
+          {projectsData.map(({ title, paragraph }, index) => (
+            <ProjectTemplate
+              scrollContainer={scrollContainer}
+              key={title}
+              title={title}
+              counter={index}
+              paragraph={paragraph}
+              image={projectImages[index].childImageSharp.fluid}
+            />
+          ))}
+          <StyledFooter>
+            <StyledHeader>
+              See all of my projects on my{' '}
+              <StyledLink href="https://github.com/Haans001?tab=repositories">
+                github
+              </StyledLink>
+              .
+            </StyledHeader>
+          </StyledFooter>
+        </MainTemplate>
+      </ParallaxProvider>
     );
   }
 }

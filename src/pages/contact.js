@@ -62,7 +62,6 @@ const Links = MediaLinks.map(({ title, url }) => (
 const ContactPage = ({ uri }) => {
   const textNodes = useRef(null);
   const list = useRef(null);
-  const tl = useRef();
 
   return (
     <MainTemplate uri={uri}>

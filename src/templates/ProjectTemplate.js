@@ -1,16 +1,14 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { Parallax } from 'react-scroll-parallax';
 import { StyledHeader, StyledParagraph } from 'utils/typography';
-import AniLink from 'gatsby-plugin-transition-link/AniLink';
+import ScrollTrigger from 'components/ScrollTrigger/ScrollTrigger';
 import { Link } from 'gatsby';
 import PropTypes from 'prop-types';
+import { window } from 'browser-monads';
 import styled from 'styled-components';
 import Image from 'gatsby-image';
-import Scrollmagic from 'scrollmagic';
-import '../../node_modules/scrollmagic/scrollmagic/uncompressed/plugins/animation.gsap';
 import { getProjectTemplateTimeline } from 'utils/timelines';
 import media from 'utils/media';
-// import ParallaxCache from 'utils/ParallaxCache';
 
 const StyledImage = styled(Image)`
   overflow: hidden;
@@ -158,39 +156,42 @@ export default function ProjectTemplate({
   title,
   paragraph,
   counter,
-  controller,
+  scrollContainer,
 }) {
   const infoRef = useRef(null);
   const imageRef = useRef(null);
   const triggerRef = useRef(null);
+  const [timeline, setTimeline] = useState(null);
 
   useEffect(() => {
     const tl = getProjectTemplateTimeline(infoRef.current, imageRef.current);
-    new Scrollmagic.Scene({
-      triggerElement: triggerRef.current,
-    })
-      .setTween(tl)
-      .addTo(controller);
+    setTimeline(tl);
   }, []);
 
   return (
-    <StyledWrapper ref={triggerRef}>
-      <StyledProjectInfo>
-        <StyledLine counter={counter} />
-        <Parallax y={[100, -100]}>
-          <div ref={infoRef}>
-            <StyledHeader>{title}</StyledHeader>
-            <StyledProjectParagraph>{paragraph}</StyledProjectParagraph>
-            <StyledLink to="/">read more >></StyledLink>
-          </div>
+    <ScrollTrigger
+      scrollContainer={scrollContainer}
+      timeline={timeline && timeline}
+      triggerOffset={window.innerHeight / 3}
+    >
+      <StyledWrapper ref={triggerRef}>
+        <StyledProjectInfo>
+          <StyledLine counter={counter} />
+          <Parallax y={[100, -100]}>
+            <div ref={infoRef}>
+              <StyledHeader>{title}</StyledHeader>
+              <StyledProjectParagraph>{paragraph}</StyledProjectParagraph>
+              <StyledLink to="/">read more >></StyledLink>
+            </div>
+          </Parallax>
+        </StyledProjectInfo>
+        <Parallax y={[20, -20]}>
+          <StyledImageWrapper ref={imageRef}>
+            <StyledImage fluid={image} />
+          </StyledImageWrapper>
         </Parallax>
-      </StyledProjectInfo>
-      <Parallax y={[20, -20]}>
-        <StyledImageWrapper ref={imageRef}>
-          <StyledImage fluid={image} />
-        </StyledImageWrapper>
-      </Parallax>
-    </StyledWrapper>
+      </StyledWrapper>
+    </ScrollTrigger>
   );
 }
 
@@ -199,5 +200,5 @@ ProjectTemplate.propTypes = {
   title: PropTypes.string.isRequired,
   paragraph: PropTypes.string.isRequired,
   counter: PropTypes.number.isRequired,
-  controller: PropTypes.shape().isRequired,
+  scrollContainer: PropTypes.element.isRequired,
 };

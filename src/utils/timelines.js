@@ -1,12 +1,11 @@
 import { TimelineMax, Power4 } from 'gsap';
-import Splitting from 'splitting';
 
 export default function getAboutPageTimelines(refs) {
   const timelines = {};
 
   function heroSectionTimeline() {
     const ref = refs.heroSectionTimeline;
-    const tl = new TimelineMax();
+    const tl = new TimelineMax({ paused: true });
     tl.staggerFrom(
       ref.childNodes,
       1,
@@ -18,7 +17,7 @@ export default function getAboutPageTimelines(refs) {
   }
   function timelineSectionTimeline() {
     const ref = refs.timelineSectionTimeline;
-    const tl = new TimelineMax();
+    const tl = new TimelineMax({ paused: true });
     tl.staggerFrom(
       ref.children[0].childNodes,
       0.6,
@@ -41,11 +40,9 @@ export default function getAboutPageTimelines(refs) {
   function skillsSectionTimeline() {
     const ref = refs.skillsSectionTimeline;
     const quote = ref.children[1].children[0];
-    const quoteChars = Splitting({ target: quote, whitespace: true })[0].chars;
+    // const quoteChars = Splitting({ target: quote, whitespace: true })[0].chars;
 
-    console.log(quoteChars);
-
-    const tl = new TimelineMax();
+    const tl = new TimelineMax({ paused: true });
     tl.from(ref.children[0].childNodes[0], 1, {
       opacity: 0,
       y: 100,
@@ -74,7 +71,7 @@ export default function getAboutPageTimelines(refs) {
       'bars'
     );
     tl.staggerFrom(
-      quoteChars,
+      quote.childNodes,
       1,
       { opacity: 0, y: 200, ease: Power4.easeOut },
       0.02,
@@ -89,7 +86,7 @@ export default function getAboutPageTimelines(refs) {
     const header = ref.firstChild;
     const lists = ref.lastChild.children;
 
-    const tl = new TimelineMax();
+    const tl = new TimelineMax({ paused: true });
     tl.from(header, 0.6, { opacity: 0, y: 100, ease: Power4.easeInOut });
     tl.staggerFrom(lists, 1, { opacity: 0, x: -50, ease: Power4.easeOut }, 0.3);
 
@@ -98,7 +95,7 @@ export default function getAboutPageTimelines(refs) {
 
   function footerTimeline() {
     const ref = refs.footerTimeline;
-    const tl = new TimelineMax();
+    const tl = new TimelineMax({ paused: true });
     const icons = ref.lastChild.childNodes;
     tl.staggerFrom(
       Array.prototype.slice.call(ref.childNodes).slice(0, 2),
@@ -127,7 +124,7 @@ export default function getAboutPageTimelines(refs) {
 
 export function getProjectTemplateTimeline(infoRef, imageRef) {
   const textNodes = infoRef.childNodes;
-  const tl = new TimelineMax({ reverse: false });
+  const tl = new TimelineMax({ reverse: false, paused: true });
   tl.staggerFrom(
     textNodes,
     0.8,

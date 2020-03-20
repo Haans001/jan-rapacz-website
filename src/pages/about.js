@@ -2,14 +2,14 @@ import React from 'react';
 import { graphql } from 'gatsby';
 import propTypes from 'prop-types';
 import styled from 'styled-components';
-import Scrollmagic from 'scrollmagic';
-import '../../node_modules/scrollmagic/scrollmagic/uncompressed/plugins/animation.gsap';
 import Img from 'gatsby-image';
+import { window } from 'browser-monads';
 import MainTemplate from 'templates/MainTemplate';
 import StyledSectionTitle, {
   StyledHeader,
   StyledParagraph,
 } from 'utils/typography';
+import ScrollTrigger from 'components/ScrollTrigger/ScrollTrigger';
 import media from 'utils/media';
 import Button from 'components/Button/Button';
 import List from 'components/List/List';
@@ -21,6 +21,7 @@ import instagram from 'assets/images/instagram.svg';
 import linkedin from 'assets/images/linkedin.svg';
 import facebook from 'assets/images/facebook.svg';
 import getAboutTimelines from 'utils/timelines';
+import SplitText from 'react-pose-text';
 
 const ImagesWrapper = styled.div`
   width: 100%;
@@ -237,26 +238,28 @@ const toolsData = [
 class AboutPage extends React.Component {
   constructor(props) {
     super(props);
-    this.controller = new Scrollmagic.Controller();
     this.triggers = {};
+    this.timelines = {};
+    this.state = {
+      scrollContainer: null,
+    };
   }
 
   componentDidMount() {
-    const timelines = getAboutTimelines(this.triggers);
-    Object.keys(timelines).forEach(tlName => {
-      new Scrollmagic.Scene({
-        triggerElement: this.triggers[tlName],
-      })
-        .setTween(timelines[tlName])
-        .addTo(this.controller);
+    this.timelines = getAboutTimelines(this.triggers);
+    this.setState({
+      scrollContainer: document.getElementById('scrollContainer'),
     });
   }
+
+  getTimeline = timeline => timeline && timeline;
 
   render() {
     const { uri, data } = this.props;
     const {
       allFile: { edges },
     } = data;
+    const { scrollContainer } = this.state;
 
     return (
       <MainTemplate uri={uri}>
@@ -265,107 +268,145 @@ class AboutPage extends React.Component {
             <Img fluid={edge.node.childImageSharp.fluid} key={edge.node.id} />
           ))}
         </ImagesWrapper>
-        <StyledWrapper
-          ref={trigger => {
-            this.triggers.heroSectionTimeline = trigger;
-          }}
+        <ScrollTrigger
+          scrollContainer={scrollContainer}
+          timeline={this.getTimeline(this.timelines.heroSectionTimeline)}
+          triggerOffset={window.innerHeight / 2}
         >
-          <StyledSectionTitle>About</StyledSectionTitle>
-          <StyledHeader>Jan Rapacz</StyledHeader>
-          <StyledParagraph>
-            Mutlitalented developer and designer based in Kraków in south
-            Poland, focusing on best user experience and interface design. I got
-            into web dev few years ago and I'm proudly developing my skills in
-            all kinds of IT business. In free time I love to spent time with
-            people I love and respect. I won't despite a great beer with good
-            interlocutor 🍺.
-          </StyledParagraph>
-          <Button to="/">
-            Contact Me <StyledArrow src={arrow} />
-          </Button>
-        </StyledWrapper>
-        <StyledWrapper>
-          <StyledSectionGrid
-            ref={trigger => {
-              this.triggers.timelineSectionTimeline = trigger;
-            }}
-          >
-            <div>
-              <StyledSectionTitle>Timeline</StyledSectionTitle>
-              <StyledHeader>
-                School years and <u>proffesional</u> experience.
-              </StyledHeader>
-            </div>
-            <StyledTimelineList>
-              {timelineListData.map(item => (
-                <li key={item.time}>
-                  <span>{item.time}</span>
-                  <p>{item.content}</p>
-                </li>
-              ))}
-            </StyledTimelineList>
-          </StyledSectionGrid>
-        </StyledWrapper>
-        <StyledWrapper>
-          <StyledSectionGrid
-            ref={trigger => {
-              this.triggers.skillsSectionTimeline = trigger;
-            }}
-          >
-            <div>
-              <StyledSectionTitle>skills</StyledSectionTitle>
-              <StyledSkillsList>
-                {skillsData.map(skill => (
-                  <li key={skill.name}>
-                    <h5>{skill.name}</h5>
-                    <StyledSkillBar widthPercent={skill.percent}>
-                      <div />
-                    </StyledSkillBar>
+          <div>
+            <StyledWrapper
+              ref={trigger => {
+                this.triggers.heroSectionTimeline = trigger;
+              }}
+            >
+              <StyledSectionTitle>About</StyledSectionTitle>
+              <StyledHeader>Jan Rapacz</StyledHeader>
+              <StyledParagraph>
+                Mutlitalented developer and designer based in Kraków in south
+                Poland, focusing on best user experience and interface design. I
+                got into web dev few years ago and I'm proudly developing my
+                skills in all kinds of IT business. In free time I love to spent
+                time with people I love and respect. I won't despite a great
+                beer with good interlocutor 🍺.
+              </StyledParagraph>
+              <Button to="/">
+                Contact Me <StyledArrow src={arrow} />
+              </Button>
+            </StyledWrapper>
+          </div>
+        </ScrollTrigger>
+        <ScrollTrigger
+          scrollContainer={scrollContainer}
+          timeline={this.getTimeline(this.timelines.timelineSectionTimeline)}
+          triggerOffset={window.innerHeight / 2}
+        >
+          <StyledWrapper>
+            <StyledSectionGrid
+              ref={trigger => {
+                this.triggers.timelineSectionTimeline = trigger;
+              }}
+            >
+              <div>
+                <StyledSectionTitle>Timeline</StyledSectionTitle>
+                <StyledHeader>
+                  School years and <u>proffesional</u> experience.
+                </StyledHeader>
+              </div>
+              <StyledTimelineList>
+                {timelineListData.map(item => (
+                  <li key={item.time}>
+                    <span>{item.time}</span>
+                    <p>{item.content}</p>
                   </li>
                 ))}
-              </StyledSkillsList>
-            </div>
-            <StyledQuoteWrapper>
-              <StyledQuote>
-                Learning is like an immeasurable sea. The more you drink it, the
-                more thirsty you are.
-              </StyledQuote>
-              <StyledQuoteIcon cacheRequests={false} src={quote} />
-            </StyledQuoteWrapper>
-          </StyledSectionGrid>
-          <StyledDivider />
-          <div
-            ref={trigger => {
-              this.triggers.toolsSectionTimeline = trigger;
-            }}
-          >
-            <StyledHeader>Tools that i use</StyledHeader>
-            <StyledToolsListWrapper>
-              {toolsData.map(({ title, tools }) => (
-                <List key={title} title={title} data={tools} />
-              ))}
-            </StyledToolsListWrapper>
-          </div>
-        </StyledWrapper>
+              </StyledTimelineList>
+            </StyledSectionGrid>
+          </StyledWrapper>
+        </ScrollTrigger>
         <StyledWrapper>
-          <StyledFooter
-            ref={trigger => {
-              this.triggers.footerTimeline = trigger;
-            }}
+          <ScrollTrigger
+            scrollContainer={scrollContainer}
+            timeline={this.getTimeline(this.timelines.skillsSectionTimeline)}
+            triggerOffset={window.innerHeight / 2}
           >
-            <StyledHeader>
-              Thats my and my stuff. Ready to see my projects?
-            </StyledHeader>
-            <Button to="/">
-              My Work <StyledArrow src={arrow} />
-            </Button>
-            <StyledSocialIconsWrapper>
-              <Icon src={facebook} />
-              <Icon src={linkedin} />
-              <Icon src={instagram} />
-            </StyledSocialIconsWrapper>
-          </StyledFooter>
+            <div>
+              <StyledSectionGrid
+                ref={trigger => {
+                  this.triggers.skillsSectionTimeline = trigger;
+                }}
+              >
+                <div>
+                  <StyledSectionTitle>skills</StyledSectionTitle>
+                  <StyledSkillsList>
+                    {skillsData.map(skill => (
+                      <li key={skill.name}>
+                        <h5>{skill.name}</h5>
+                        <StyledSkillBar widthPercent={skill.percent}>
+                          <div />
+                        </StyledSkillBar>
+                      </li>
+                    ))}
+                  </StyledSkillsList>
+                </div>
+                <StyledQuoteWrapper>
+                  <StyledQuote>
+                    <SplitText>
+                      Learning is like an immeasurable sea. The more you drink
+                      it, the more thirsty you are.
+                    </SplitText>
+                  </StyledQuote>
+                  <StyledQuoteIcon cacheRequests={false} src={quote} />
+                </StyledQuoteWrapper>
+              </StyledSectionGrid>
+            </div>
+          </ScrollTrigger>
+          <StyledDivider />
+          <ScrollTrigger
+            scrollContainer={scrollContainer}
+            timeline={this.getTimeline(this.timelines.toolsSectionTimeline)}
+            triggerOffset={window.innerHeight / 2}
+          >
+            <div>
+              <div
+                ref={trigger => {
+                  this.triggers.toolsSectionTimeline = trigger;
+                }}
+              >
+                <StyledHeader>Tools that i use</StyledHeader>
+                <StyledToolsListWrapper>
+                  {toolsData.map(({ title, tools }) => (
+                    <List key={title} title={title} data={tools} />
+                  ))}
+                </StyledToolsListWrapper>
+              </div>
+            </div>
+          </ScrollTrigger>
         </StyledWrapper>
+        <ScrollTrigger
+          scrollContainer={scrollContainer}
+          timeline={this.getTimeline(this.timelines.footerTimeline)}
+          triggerOffset={window.innerHeight / 2}
+        >
+          <StyledWrapper>
+            <StyledFooter
+              ref={trigger => {
+                this.triggers.footerTimeline = trigger;
+              }}
+            >
+              <StyledHeader>
+                Thats my and my stuff. Ready to see my projects?
+              </StyledHeader>
+              <Button to="/">
+                My Work <StyledArrow src={arrow} />
+              </Button>
+              <StyledSocialIconsWrapper>
+                <Icon src={facebook} />
+                <Icon src={linkedin} />
+                <Icon src={instagram} />
+              </StyledSocialIconsWrapper>
+            </StyledFooter>
+          </StyledWrapper>
+        </ScrollTrigger>
       </MainTemplate>
     );
   }
