@@ -1,5 +1,4 @@
 import React from 'react';
-import { ParallaxProvider } from 'react-scroll-parallax';
 import SEO from 'components/SEO/SEO';
 import Navigation from 'components/Navigation/Navigation';
 import Hamburger from 'components/Hamburger/Hamburger';
@@ -39,17 +38,6 @@ const StyledWrapper = styled.div`
   overflow-y : ${({ overflow }) => (overflow ? `scroll` : `hidden`)};    
 `;
 
-const StyledTransitionBox = styled.div`
-  background: red;
-  width: 300px;
-  opacity: 0;
-  height: 300px;
-  position: fixed;
-  z-index: 99999;
-  top: 0;
-  left: 0;
-`;
-
 export default class MainTemplate extends React.Component {
   constructor(props) {
     super(props);
@@ -59,14 +47,7 @@ export default class MainTemplate extends React.Component {
       timerId: null,
       scrollContainer: null,
     };
-    this.scrollContainerRef = React.createRef();
     this.handleToggle = this.handleToggle.bind(this);
-  }
-
-  componentDidMount() {
-    this.setState({
-      scrollContainer: this.scrollContainerRef.current,
-    });
   }
 
   componentWillUnmount() {
@@ -92,7 +73,7 @@ export default class MainTemplate extends React.Component {
   }
 
   render() {
-    const { toggled, overflow, scrollContainer } = this.state;
+    const { toggled, overflow } = this.state;
     const { uri, children } = this.props;
     return (
       <>
@@ -100,19 +81,15 @@ export default class MainTemplate extends React.Component {
         <GlobalStyle />
         <ThemeProvider theme={GlobalTheme}>
           <>
-            <StyledTransitionBox id="transitionBox" />
-
             <Hamburger handleToggle={this.handleToggle} />
             <Perspective active={toggled}>
               <Navigation pathname={uri} handleToggle={this.handleToggle} />
               <StyledWrapper
-                ref={this.scrollContainerRef}
+                id="scrollContainer"
                 active={toggled}
                 overflow={overflow}
               >
-                <ParallaxProvider scrollContainer={scrollContainer}>
-                  {children}
-                </ParallaxProvider>
+                {children}
               </StyledWrapper>
             </Perspective>
           </>
